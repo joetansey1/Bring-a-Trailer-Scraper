@@ -1,0 +1,106 @@
+{
+  "id": 1,
+  "type": "timeseries",
+  "title": "GT-350 BaT Historical Data",
+  "gridPos": {
+    "x": 0,
+    "y": 0,
+    "h": 8,
+    "w": 23
+  },
+  "fieldConfig": {
+    "defaults": {
+      "custom": {
+        "drawStyle": "line",
+        "lineInterpolation": "linear",
+        "barAlignment": 0,
+        "barWidthFactor": 0.6,
+        "lineWidth": 1,
+        "fillOpacity": 0,
+        "gradientMode": "none",
+        "spanNulls": false,
+        "insertNulls": false,
+        "showPoints": "auto",
+        "pointSize": 5,
+        "stacking": {
+          "mode": "none",
+          "group": "A"
+        },
+        "axisPlacement": "auto",
+        "axisLabel": "",
+        "axisColorMode": "text",
+        "axisBorderShow": false,
+        "scaleDistribution": {
+          "type": "linear"
+        },
+        "axisCenteredZero": false,
+        "hideFrom": {
+          "tooltip": false,
+          "viz": false,
+          "legend": false
+        },
+        "thresholdsStyle": {
+          "mode": "off"
+        }
+      },
+      "color": {
+        "mode": "palette-classic"
+      },
+      "mappings": [],
+      "thresholds": {
+        "mode": "absolute",
+        "steps": [
+          {
+            "color": "green",
+            "value": null
+          },
+          {
+            "color": "red",
+            "value": 80
+          }
+        ]
+      }
+    },
+    "overrides": []
+  },
+  "pluginVersion": "12.0.0",
+  "targets": [
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "belx7heho5n28f"
+      },
+      "query": "from(bucket: \"GT350\")\n  |> range(start: 2020-01-01)\n  |> filter(fn: (r) => r._measurement == \"gt350_listing\")\n  |> filter(fn: (r) => r._field == \"price\")\n  |> map(fn: (r) => ({\n      _time: time(v: r.sold_date),  // cast string \"YYYY-MM-DD\" to timestamp\n      price: r._value,\n      _field: \"price\"\n  }))\n  |> group()\n\n\n\n\n\n\n\n\n\n\n",
+      "refId": "A"
+    },
+    {
+      "datasource": {
+        "uid": "belx7heho5n28f",
+        "type": "influxdb"
+      },
+      "refId": "B",
+      "hide": false,
+      "query": "from(bucket: \"GT350\")\n  |> range(start: 2020-01-01)\n  |> filter(fn: (r) => r._measurement == \"gt350_listing\")\n  |> filter(fn: (r) => r._field == \"price\")\n  |> map(fn: (r) => ({\n      _time: time(v: r.sold_date),\n      price: r._value,\n  }))\n  |> keep(columns: [\"_time\", \"price\"])\n  |> sort(columns: [\"_time\"])\n  |> window(every: 30d)\n  |> mean(column: \"price\")\n  |> duplicate(column: \"_stop\", as: \"_time\")\n  |> window(every: inf)\n  |> map(fn: (r) => ({\n      _time: r._time,\n      price_30d_avg: r.price  // 👈 rename the field\n  }))\n\n"
+    }
+  ],
+  "datasource": {
+    "type": "influxdb",
+    "uid": "belx7heho5n28f"
+  },
+  "options": {
+    "tooltip": {
+      "mode": "single",
+      "sort": "none",
+      "hideZeros": false
+    },
+    "legend": {
+      "showLegend": true,
+      "displayMode": "list",
+      "placement": "bottom",
+      "calcs": [
+        "mean",
+        "median"
+      ]
+    }
+  }
+}
