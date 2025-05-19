@@ -11,7 +11,7 @@ from influxdb_client import InfluxDBClient, Point, WriteOptions
 
 # ✅ CONFIG
 INFLUX_URL = "http://localhost:8086"
-INFLUX_TOKEN = "erfvQYLBhrERH9bu8ORZzBRbfQ4GuEM8_f4MYCvVeMJhe38F-K2hZf0C0aNj4MPhk-GyRxufLNRzNrAs0h8gjg=="
+INFLUX_TOKEN = "UR TOKEN HERE"
 INFLUX_ORG = "localorg"
 INFLUX_BUCKET = "GT350"
 BASE_URL = "https://bringatrailer.com/search/?s=mustang+shelby+gt350&page={}"
