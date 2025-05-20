@@ -7,3 +7,5 @@ Writes to InfluxDB, this project is on a Raspberry Pi but of course portable. Gr
 
 The file you want is bat_historical_selenium_scraper.py
 I never had much luck with the RSS one (too few listings to bother), and also the influx_writer.py
+
+Includes grafana starter panel showing all the GT-350s by sales price and sale date as a .json to import
